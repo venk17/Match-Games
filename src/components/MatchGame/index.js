@@ -1,16 +1,19 @@
 import {Component} from 'react'
-import TagItem from './TagItem'
-import ImageItem from './ImageItem'
+import TabItem from '../TabItem'
+import ImageItem from '../ImageItem'
 import './index.css'
 
-class Matchgame extends Component {
-  state = {
-    score: 0,
-    activeId: 'FRUIT',
-    timer: 60,
-    matchImageUrl:
-      'https://assets.ccbp.in/frontend/react-js/match-game/orange-img.png',
-    isGameOver: false,
+class MatchGame extends Component {
+  constructor(props) {
+    super(props)
+    const {imagesList} = this.props
+    this.state = {
+      score: 0,
+      activeId: 'FRUIT',
+      timer: 60,
+      matchImageUrl: imagesList[0].imageUrl,
+      isGameOver: false,
+    }
   }
 
   componentDidMount() {
@@ -26,8 +29,14 @@ class Matchgame extends Component {
   }
 
   onPlayAgain = () => {
-    clearInterval(this.timerId)
-    this.setState({score: 0, isGameOver: false, timer: 60})
+    const {imagesList} = this.props
+    this.setState({
+      score: 0,
+      isGameOver: false,
+      timer: 60,
+      activeId: 'FRUIT',
+      matchImageUrl: imagesList[0].imageUrl,
+    })
     this.timerId = setInterval(this.decrementTime, 1000)
   }
 
@@ -61,13 +70,15 @@ class Matchgame extends Component {
 
   renderTabsList = () => {
     const {tabsList} = this.props
+    const {activeId} = this.state
 
     return (
       <ul className="tabs-list-container">
         {tabsList.map(eachTab => (
-          <TagItem
-            tabs={eachTab}
+          <TabItem
+            tab={eachTab}
             key={eachTab.tabId}
+            isActive={activeId === eachTab.tabId}
             onSelectedTab={this.onSelectedTab}
           />
         ))}
@@ -87,7 +98,7 @@ class Matchgame extends Component {
       <ul className="image-list-container">
         {filteredImages.map(eachImage => (
           <ImageItem
-            imageList={eachImage}
+            imageDetails={eachImage}
             key={eachImage.id}
             onThumbnailClick={this.onThumbnailClick}
           />
@@ -100,61 +111,59 @@ class Matchgame extends Component {
     const {timer, matchImageUrl, score, isGameOver} = this.state
 
     return (
-      <div className="bg-container">
-        <div className="logo-container">
+      <div className="app-container">
+        <div className="navbar">
           <img
             src="https://assets.ccbp.in/frontend/react-js/match-game-website-logo.png"
-            className="logo"
+            className="website-logo"
             alt="website logo"
           />
-          <ul className="nav-items">
-            <li className="scr">
-              <p className="score">
-                Score: <span className="scores">{score}</span>
-              </p>
-            </li>
-            <li className="timer-container">
+          <div className="score-timer-container">
+            <p className="score">
+              Score: <span className="score-value">{score}</span>
+            </p>
+            <div className="timer-container">
               <img
                 src="https://assets.ccbp.in/frontend/react-js/match-game-timer-img.png"
-                className="timer"
+                className="timer-icon"
                 alt="timer"
               />
-              <p className="scores">{timer} sec</p>
-            </li>
-          </ul>
+              <p className="timer">{timer} sec</p>
+            </div>
+          </div>
         </div>
 
-        <div className="container">
+        <div className="game-container">
           {isGameOver ? (
-            <div className="gameOver-container">
-              <div className="game-over">
+            <div className="score-card">
+              <img
+                src="https://assets.ccbp.in/frontend/react-js/match-game-trophy.png"
+                className="trophy"
+                alt="trophy"
+              />
+              <p className="your-score">YOUR SCORE</p>
+              <p className="final-score">{score}</p>
+              <button
+                type="button"
+                className="play-again-button"
+                onClick={this.onPlayAgain}
+              >
                 <img
-                  src="https://assets.ccbp.in/frontend/react-js/match-game-trophy.png"
-                  className="trophy"
-                  alt="trophy"
+                  src="https://assets.ccbp.in/frontend/react-js/match-game-play-again-img.png"
+                  className="reset-icon"
+                  alt="reset"
                 />
-                <p className="your-score">YOUR SCORE</p>
-                <h1 className="final-score">{score}</h1>
-                <button
-                  className="play-again"
-                  type="button"
-                  onClick={this.onPlayAgain}
-                >
-                  <img
-                    src="https://assets.ccbp.in/frontend/react-js/match-game-play-again-img.png"
-                    className="reset"
-                    alt="reset"
-                  />
-                  <p>Play Again</p>
-                </button>
-              </div>
+                <span>PLAY AGAIN</span>
+              </button>
             </div>
           ) : (
-            <div>
-              <img src={matchImageUrl} className="image" alt="match" />
+            <>
+              <div className="match-image-container">
+                <img src={matchImageUrl} className="match-image" alt="match" />
+              </div>
               {this.renderTabsList()}
               {this.renderImageList()}
-            </div>
+            </>
           )}
         </div>
       </div>
@@ -162,4 +171,4 @@ class Matchgame extends Component {
   }
 }
 
-export default Matchgame
+export default MatchGame

@@ -1,7 +1,6 @@
 import './App.css'
-import Matchgame from './Matchgame'
+import MatchGame from './components/MatchGame'
 
-// These are the lists used in the application. You can move them to any component needed.
 const tabsList = [
   {tabId: 'FRUIT', displayText: 'Fruits'},
   {tabId: 'ANIMAL', displayText: 'Animals'},
@@ -248,6 +247,6 @@ const imagesList = [
   },
 ]
 
-const App = () => <Matchgame tabsList={tabsList} imagesList={imagesList} />
+const App = () => <MatchGame tabsList={tabsList} imagesList={imagesList} />
 
 export default App
